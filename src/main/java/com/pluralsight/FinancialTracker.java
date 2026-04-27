@@ -1,11 +1,13 @@
 package com.pluralsight;
 
+import java.io.*;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
+
 
 /*
  * Capstone skeleton – personal finance tracker.
@@ -35,18 +37,23 @@ public class FinancialTracker {
        Main menu
        ------------------------------------------------------------------ */
     public static void main(String[] args) {
+        final String RESET = "\u001B[0m";
+        final String YELLOW = "\u001B[33m";
+        final String BLUE = "\u001B[34m";
+        final String PURPLE = "\u001B[35m";
+
         loadTransactions(FILE_NAME);
 
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
 
         while (running) {
-            System.out.println("Welcome to TransactionApp");
-            System.out.println("Choose an option:");
-            System.out.println("D) Add Deposit");
+            System.out.println(YELLOW + "Welcome to TransactionApp" + RESET);
+            System.out.println(BLUE + "Choose an option:" + RESET);
+            System.out.println(PURPLE + "D) Add Deposit");
             System.out.println("P) Make Payment (Debit)");
             System.out.println("L) Ledger");
-            System.out.println("X) Exit");
+            System.out.println("X) Exit" + RESET);
 
             String input = scanner.nextLine().trim();
 
@@ -55,7 +62,7 @@ public class FinancialTracker {
                 case "P" -> addPayment(scanner);
                 case "L" -> ledgerMenu(scanner);
                 case "X" -> running = false;
-                default -> System.out.println("Invalid option");
+                default -> System.err.println("Invalid option\n");
             }
         }
         scanner.close();
@@ -74,6 +81,34 @@ public class FinancialTracker {
         // TODO: create file if it does not exist, then read each line,
         //       parse the five fields, build a Transaction object,
         //       and add it to the transactions list.
+        File file = new File(fileName);
+
+        try {
+            if (file.createNewFile()) {
+                System.out.println("File " + fileName + " created.\n\n");
+            }else {
+                System.out.println("File " + fileName + " exists.\n\n");
+            }
+        }catch (Exception e) {
+            System.err.println("Error finding file" + e.getMessage());
+        }
+
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split("\\|");
+                LocalDate date = LocalDate.parse(data[0], DATE_FMT);
+                LocalTime time = LocalTime.parse(data[1], TIME_FMT);
+                String name = data[2];
+                String company = data[3];
+                double amount = Double.parseDouble(data[4]);
+
+                Transaction transaction = new Transaction(date, time, name,company, amount );
+                transactions.add(transaction);
+            }
+        } catch (Exception e) {
+            System.out.println("Error reading file");
+        }
     }
 
     /* ------------------------------------------------------------------
@@ -103,15 +138,20 @@ public class FinancialTracker {
        Ledger menu
        ------------------------------------------------------------------ */
     private static void ledgerMenu(Scanner scanner) {
+        final String RESET = "\u001B[0m";
+        final String YELLOW = "\u001B[33m";
+        final String BLUE = "\u001B[34m";
+        final String PURPLE = "\u001B[35m";
+
         boolean running = true;
         while (running) {
-            System.out.println("Ledger");
-            System.out.println("Choose an option:");
-            System.out.println("A) All");
+            System.out.println(YELLOW + "Ledger"  + RESET);
+            System.out.println(BLUE + "Choose an option:" + RESET);
+            System.out.println(PURPLE + "A) All");
             System.out.println("D) Deposits");
             System.out.println("P) Payments");
             System.out.println("R) Reports");
-            System.out.println("H) Home");
+            System.out.println("H) Home" + RESET);
 
             String input = scanner.nextLine().trim();
 
@@ -121,7 +161,7 @@ public class FinancialTracker {
                 case "P" -> displayPayments();
                 case "R" -> reportsMenu(scanner);
                 case "H" -> running = false;
-                default -> System.out.println("Invalid option");
+                default -> System.err.println("Invalid option\n");
             }
         }
     }
@@ -139,17 +179,22 @@ public class FinancialTracker {
        Reports menu
        ------------------------------------------------------------------ */
     private static void reportsMenu(Scanner scanner) {
+        final String RESET = "\u001B[0m";
+        final String YELLOW = "\u001B[33m";
+        final String BLUE = "\u001B[34m";
+        final String PURPLE = "\u001B[35m";
+
         boolean running = true;
         while (running) {
-            System.out.println("Reports");
-            System.out.println("Choose an option:");
-            System.out.println("1) Month To Date");
+            System.out.println(YELLOW + "Reports" + RESET);
+            System.out.println(BLUE + "Choose an option:" + RESET);
+            System.out.println(PURPLE + "1) Month To Date");
             System.out.println("2) Previous Month");
             System.out.println("3) Year To Date");
             System.out.println("4) Previous Year");
             System.out.println("5) Search by Vendor");
             System.out.println("6) Custom Search");
-            System.out.println("0) Back");
+            System.out.println("0) Back" + RESET);
 
             String input = scanner.nextLine().trim();
 
@@ -161,7 +206,7 @@ public class FinancialTracker {
                 case "5" -> {/* TODO – prompt for vendor then report */ }
                 case "6" -> customSearch(scanner);
                 case "0" -> running = false;
-                default -> System.out.println("Invalid option");
+                default -> System.err.println("Invalid option\n");
             }
         }
     }
