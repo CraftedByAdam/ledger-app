@@ -123,6 +123,36 @@ public class FinancialTracker {
      */
     private static void addDeposit(Scanner scanner) {
         // TODO
+        final String RESET = "\u001B[0m";
+        final String BLUE = "\u001B[34m";
+        final String GREEN = "\u001B[32m";
+
+        System.out.print(BLUE + "Date & Time (yyyy-MM-dd HH:mm:ss): ");
+        String dateTime = scanner.nextLine();
+        System.out.print("Description: ");
+        String description = scanner.nextLine();
+        System.out.print("Vendor: ");
+        String vendor = scanner.nextLine();
+        System.out.print("Amount (positive): " + RESET);
+        double userAmount = Double.parseDouble(scanner.nextLine());
+
+        if (userAmount <= 0) {
+            System.err.println("Invalid Amount");
+            return;
+        }
+        String[] dateTimeParts = dateTime.split(" ");
+        LocalDate date = LocalDate.parse(dateTimeParts[0], DATE_FMT);
+        LocalTime time = LocalTime.parse(dateTimeParts[1], TIME_FMT);
+        double amount = userAmount;
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
+            String line;
+            bw.write(date + "|" + time + "|" + description + "|" + vendor + "|" + "$" + amount);
+            bw.newLine();
+            System.out.println(GREEN + "Deposit Recorded\n" + RESET);
+        } catch (Exception e)  {
+            System.err.println("Error adding information" + e.getMessage());
+        }
     }
 
     /**
