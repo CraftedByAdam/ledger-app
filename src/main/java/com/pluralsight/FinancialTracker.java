@@ -33,14 +33,15 @@ public class FinancialTracker {
     private static final DateTimeFormatter TIME_FMT = DateTimeFormatter.ofPattern(TIME_PATTERN);
     private static final DateTimeFormatter DATETIME_FMT = DateTimeFormatter.ofPattern(DATETIME_PATTERN);
 
+    private static final String RESET = "\u001B[0m";
+    private static final String YELLOW = "\u001B[33m";
+    private static final String BLUE = "\u001B[34m";
+    private static final String PURPLE = "\u001B[35m";
+
     /* ------------------------------------------------------------------
        Main menu
        ------------------------------------------------------------------ */
     public static void main(String[] args) {
-        final String RESET = "\u001B[0m";
-        final String YELLOW = "\u001B[33m";
-        final String BLUE = "\u001B[34m";
-        final String PURPLE = "\u001B[35m";
 
         loadTransactions(FILE_NAME);
 
@@ -72,10 +73,10 @@ public class FinancialTracker {
        File I/O
        ------------------------------------------------------------------ */
 
+
     /**
-     * Load transactions from FILE_NAME.
-     * • If the file doesn’t exist, create an empty one so that future writes succeed.
-     * • Each line looks like: date|time|description|vendor|amount
+     * explain here
+     * @param fileName
      */
     public static void loadTransactions(String fileName) {
         // TODO: create file if it does not exist, then read each line,
@@ -99,11 +100,11 @@ public class FinancialTracker {
                 String[] data = line.split("\\|");
                 LocalDate date = LocalDate.parse(data[0], DATE_FMT);
                 LocalTime time = LocalTime.parse(data[1], TIME_FMT);
-                String name = data[2];
-                String company = data[3];
+                String name = data[2];//fix
+                String company = data[3];//fix
                 double amount = Double.parseDouble(data[4]);
 
-                Transaction transaction = new Transaction(date, time, name,company, amount );
+                Transaction transaction = new Transaction(date, time, name,company, amount );//fix
                 transactions.add(transaction);
             }
         } catch (Exception e) {
@@ -138,16 +139,21 @@ public class FinancialTracker {
 
         if (userAmount <= 0) {
             System.err.println("Invalid Amount");
-            return;
+            return;             //find a way to get it to keep asking
         }
+        //Better way!
         String[] dateTimeParts = dateTime.split(" ");
         LocalDate date = LocalDate.parse(dateTimeParts[0], DATE_FMT);
         LocalTime time = LocalTime.parse(dateTimeParts[1], TIME_FMT);
-        double amount = userAmount;
+
+        Transaction transaction = new Transaction(date, time, description,vendor, userAmount);//fix
+        transactions.add(transaction);
+
+        //String.format for user amount
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
             String line;
-            bw.write(date + "|" + time + "|" + description + "|" + vendor + "|" + "$" + amount);
+            bw.write(date.format(DATE_FMT) + "|" + time + "|" + description + "|" + vendor + "|" + userAmount);
             bw.newLine();
             System.out.println(GREEN + "Deposit Recorded\n" + RESET);
         } catch (Exception e)  {
@@ -162,6 +168,36 @@ public class FinancialTracker {
      */
     private static void addPayment(Scanner scanner) {
         // TODO
+        final String RESET = "\u001B[0m";
+        final String BLUE = "\u001B[34m";
+        final String GREEN = "\u001B[32m";
+
+        System.out.print(BLUE + "Date & Time (yyyy-MM-dd HH:mm:ss): ");
+        String dateTime = scanner.nextLine();
+        System.out.print("Description: ");
+        String description = scanner.nextLine();
+        System.out.print("Vendor: ");
+        String vendor = scanner.nextLine();
+        System.out.print("Amount (positive): " + RESET);
+        double userAmount = Double.parseDouble(scanner.nextLine());
+
+        if (userAmount <= 0) {
+            System.err.println("Invalid Amount");
+            return;
+        }
+        String[] dateTimeParts = dateTime.split(" ");
+        LocalDate date = LocalDate.parse(dateTimeParts[0], DATE_FMT);
+        LocalTime time = LocalTime.parse(dateTimeParts[1], TIME_FMT);
+        double amount = -userAmount;
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
+            String line;
+            bw.write(date + "|" + time + "|" + description + "|" + vendor + "|" + amount);
+            bw.newLine();
+            System.out.println(GREEN + "Deposit Recorded\n" + RESET);
+        } catch (Exception e)  {
+            System.err.println("Error adding information" + e.getMessage());
+        }
     }
 
     /* ------------------------------------------------------------------
