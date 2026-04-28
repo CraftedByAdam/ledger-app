@@ -9,20 +9,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-
-/*
- * Capstone skeleton – personal finance tracker.
- * ------------------------------------------------
- * File format  (pipe-delimited)
- *     yyyy-MM-dd|HH:mm:ss|description|vendor|amount
- * A deposit has a positive amount; a payment is stored
- * as a negative amount.
- */
 public class FinancialTracker {
 
-    /* ------------------------------------------------------------------
-       Shared data and formatters
-       ------------------------------------------------------------------ */
     private static final ArrayList<Transaction> transactions = new ArrayList<>();
     private static final String FILE_NAME = "transactions.csv";
 
@@ -40,9 +28,6 @@ public class FinancialTracker {
     private static final String BLUE = "\u001B[34m";
     private static final String PURPLE = "\u001B[35m";
 
-    /* ------------------------------------------------------------------
-       Main menu
-       ------------------------------------------------------------------ */
     public static void main(String[] args) {
 
         loadTransactions(FILE_NAME);
@@ -70,11 +55,6 @@ public class FinancialTracker {
         }
         scanner.close();
     }
-
-    /* ------------------------------------------------------------------
-       File I/O
-       ------------------------------------------------------------------ */
-
 
     /**
      * This method runs as soon as the program starts. It syncs the CSV file with the ArrayList. It will check if the
@@ -158,9 +138,8 @@ public class FinancialTracker {
     }
 
     /**
-     * Same prompts as addDeposit.
-     * Amount must be entered as a positive number,
-     * then converted to a negative amount before storing.
+     * In this method I did the same thing as I did in my addDeposit method, but I made it so the user enters a positive amount,
+     * and it will save to the file as a negative number.
      */
     private static void addPayment(Scanner scanner) {
         // TODO
@@ -197,9 +176,6 @@ public class FinancialTracker {
         }
     }
 
-    /* ------------------------------------------------------------------
-       Ledger menu
-       ------------------------------------------------------------------ */
     private static void ledgerMenu(Scanner scanner) {
         final String RESET = "\u001B[0m";
         final String YELLOW = "\u001B[33m";
@@ -229,9 +205,11 @@ public class FinancialTracker {
         }
     }
 
-    /* ------------------------------------------------------------------
-       Display helpers: show data in neat columns
-       ------------------------------------------------------------------ */
+    /**
+     * This method generates all the transaction in a table format. To show the newest item first I made a reverse for loop that
+     * shows the transaction from newest to oldest. I used my getters to access the data that is inside each object and I
+     * also used prinf to format the data into aligned columns.
+    * */
     private static void displayLedger() {
         /* TODO – print all transactions in column format */
         System.out.println("DATE\t\tTIME\t\tDESCRIPTION\t\tVENDOR\t\t\tAMOUNT");
@@ -244,6 +222,10 @@ public class FinancialTracker {
         }
     }
 
+    /**
+     * In this method I took the code I wrote in my displayLedger method and I added an if statement inside my for loop
+     * that checks if the amount is positive and moved my printf inside the condition.
+     **/
     private static void displayDeposits() {
         /* TODO – only amount > 0 */
         System.out.println("DATE\t\tTIME\t\tDESCRIPTION\t\tVENDOR\t\t\tAMOUNT");
@@ -258,6 +240,10 @@ public class FinancialTracker {
         }
     }
 
+    /**
+     * In this method I Just took the code in my displayDeposits methods and changed the > to < in the if statement so
+     * it will only display the amounts that are negative, bellow 0.
+     **/
     private static void displayPayments() {
         /* TODO – only amount < 0 */
         System.out.println("DATE\t\tTIME\t\tDESCRIPTION\t\tVENDOR\t\t\tAMOUNT");
