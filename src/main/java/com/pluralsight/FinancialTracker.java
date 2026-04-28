@@ -3,6 +3,7 @@ package com.pluralsight;
 import java.io.*;
 import java.io.File;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class FinancialTracker {
     private static final DateTimeFormatter TIME_FMT = DateTimeFormatter.ofPattern(TIME_PATTERN);
     private static final DateTimeFormatter DATETIME_FMT = DateTimeFormatter.ofPattern(DATETIME_PATTERN);
 
+    //This is ANSI escape codes, and this changes the color of the text in the console.
     private static final String RESET = "\u001B[0m";
     private static final String YELLOW = "\u001B[33m";
     private static final String BLUE = "\u001B[34m";
@@ -100,11 +102,11 @@ public class FinancialTracker {
                 String[] data = line.split("\\|");
                 LocalDate date = LocalDate.parse(data[0], DATE_FMT);
                 LocalTime time = LocalTime.parse(data[1], TIME_FMT);
-                String name = data[2];//fix
-                String company = data[3];//fix
+                String description = data[2];
+                String vendor = data[3];
                 double amount = Double.parseDouble(data[4]);
 
-                Transaction transaction = new Transaction(date, time, name,company, amount );//fix
+                Transaction transaction = new Transaction(date, time, description, vendor, amount );
                 transactions.add(transaction);
             }
         } catch (Exception e) {
@@ -128,37 +130,37 @@ public class FinancialTracker {
         final String BLUE = "\u001B[34m";
         final String GREEN = "\u001B[32m";
 
-        System.out.print(BLUE + "Date & Time (yyyy-MM-dd HH:mm:ss): ");
-        String dateTime = scanner.nextLine();
-        System.out.print("Description: ");
-        String description = scanner.nextLine();
-        System.out.print("Vendor: ");
-        String vendor = scanner.nextLine();
-        System.out.print("Amount (positive): " + RESET);
-        double userAmount = Double.parseDouble(scanner.nextLine());
+            System.out.print(BLUE + "Date & Time (yyyy-MM-dd HH:mm:ss): ");
+            String dateTime = scanner.nextLine();
+            System.out.print("Description: ");
+            String description = scanner.nextLine();
+            System.out.print("Vendor: ");
+            String vendor = scanner.nextLine();
+            System.out.print("Amount (positive): " + RESET);
+            double userAmount = Double.parseDouble(scanner.nextLine());
 
-        if (userAmount <= 0) {
-            System.err.println("Invalid Amount");
-            return;             //find a way to get it to keep asking
-        }
-        //Better way!
-        String[] dateTimeParts = dateTime.split(" ");
-        LocalDate date = LocalDate.parse(dateTimeParts[0], DATE_FMT);
-        LocalTime time = LocalTime.parse(dateTimeParts[1], TIME_FMT);
+            if (userAmount <= 0) {
+                System.err.println("Invalid Amount");
+                             //find a way to get it to keep asking
+            }
+            //Better way!
+            String[] dateTimeParts = dateTime.split(" ");
+            LocalDate date = LocalDate.parse(dateTimeParts[0], DATE_FMT);
+            LocalTime time = LocalTime.parse(dateTimeParts[1], TIME_FMT);
 
-        Transaction transaction = new Transaction(date, time, description,vendor, userAmount);//fix
-        transactions.add(transaction);
+            Transaction transaction = new Transaction(date, time, description, vendor, userAmount);
+            transactions.add(transaction);
 
-        //String.format for user amount
+            //String.format for user amount
 
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
-            String line;
-            bw.write(date.format(DATE_FMT) + "|" + time + "|" + description + "|" + vendor + "|" + userAmount);
-            bw.newLine();
-            System.out.println(GREEN + "Deposit Recorded\n" + RESET);
-        } catch (Exception e)  {
-            System.err.println("Error adding information" + e.getMessage());
-        }
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
+                String line;
+                bw.write(date.format(DATE_FMT) + "|" + time + "|" + description + "|" + vendor + "|" + userAmount);
+                bw.newLine();
+                System.out.println(GREEN + "Deposit Recorded\n" + RESET);
+            } catch (Exception e)  {
+                System.err.println("Error adding information" + e.getMessage());
+            }
     }
 
     /**
@@ -235,11 +237,21 @@ public class FinancialTracker {
     /* ------------------------------------------------------------------
        Display helpers: show data in neat columns
        ------------------------------------------------------------------ */
-    private static void displayLedger() { /* TODO – print all transactions in column format */ }
+    private static void displayLedger() {
+        /* TODO – print all transactions in column format */
+        System.out.println("DATE\t\tTIME\t\tDESCRIPTION\t\tVENDOR\t\t\tAMOUNT");
+        System.out.println("----------------------------------------------------------------------");
 
-    private static void displayDeposits() { /* TODO – only amount > 0               */ }
+        for(int i = transactions.size() - 1; i >= 0; i--) {
+            Transaction transaction = transactions.get(i);
+            System.out.printf("%-12s %-12s %-12s %-12s %10.2f\n", transaction.getDate(), transaction.getTime(), transaction.getDescription(),
+                    transaction.getVendor(), transaction.getAmount());
+        }
+    }
 
-    private static void displayPayments() { /* TODO – only amount < 0               */ }
+    private static void displayDeposits() { /* TODO – only amount > 0 */ }
+
+    private static void displayPayments() { /* TODO – only amount < 0 */ }
 
     /* ------------------------------------------------------------------
        Reports menu
