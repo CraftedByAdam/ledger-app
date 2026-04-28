@@ -77,13 +77,11 @@ public class FinancialTracker {
 
 
     /**
-     * explain here
-     * @param fileName
+     * This method runs as soon as the program starts. It syncs the CSV file with the ArrayList. It will check if the
+     * exists first so the program doesn't crash. Then it reads the file, splits the text at each pipe symbol and turns
+     * the data into a transaction object.
      */
     public static void loadTransactions(String fileName) {
-        // TODO: create file if it does not exist, then read each line,
-        //       parse the five fields, build a Transaction object,
-        //       and add it to the transactions list.
         File file = new File(fileName);
 
         try {
@@ -95,7 +93,8 @@ public class FinancialTracker {
         }catch (Exception e) {
             System.err.println("Error finding file" + e.getMessage());
         }
-
+        /* This is a "try with resource". Safest way to close a BufferReader, It will close the file for me automatically
+        * instead of my closing it manually with ".close". */
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -114,15 +113,11 @@ public class FinancialTracker {
         }
     }
 
-    /* ------------------------------------------------------------------
-       Add new transactions
-       ------------------------------------------------------------------ */
-
     /**
-     * Prompt for ONE date+time string in the format
-     * "yyyy-MM-dd HH:mm:ss", plus description, vendor, amount.
-     * Validate that the amount entered is positive.
-     * Store the amount as-is (positive) and append to the file.
+     * This method prompts the user for the Date & Time, Description, Vendor, and amount. I made sure the amount entered
+     * is a positive amount. It splits the Date & Time input to match the file format, I also used a FIleWriter and set
+     * it to true so that it saves the new transactions to the bottom of the file without erasing or overwriting the
+     * current data.
      */
     private static void addDeposit(Scanner scanner) {
         // TODO
