@@ -179,16 +179,17 @@ public class FinancialTracker {
 
         if (userAmount <= 0) {
             System.err.println("Invalid Amount");
-            return;
+            return; //find a way to get it to keep asking
         }
         String[] dateTimeParts = dateTime.split(" ");
         LocalDate date = LocalDate.parse(dateTimeParts[0], DATE_FMT);
         LocalTime time = LocalTime.parse(dateTimeParts[1], TIME_FMT);
         double amount = -userAmount;
 
+        String formatted = String.format("%s|%s|%s|%s|%.2f", date, time, description, vendor,  amount);
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
             String line;
-            bw.write(date + "|" + time + "|" + description + "|" + vendor + "|" + amount);
+            bw.write(formatted);
             bw.newLine();
             System.out.println(GREEN + "Deposit Recorded\n" + RESET);
         } catch (Exception e)  {
