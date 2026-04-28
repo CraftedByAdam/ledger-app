@@ -146,11 +146,10 @@ public class FinancialTracker {
             Transaction transaction = new Transaction(date, time, description, vendor, userAmount);
             transactions.add(transaction);
 
-            //String.format for user amount
-
+            String formatted = String.format("%s|%s|%s|%s|%.2f", date, time, description, vendor,  userAmount);
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
                 String line;
-                bw.write(date.format(DATE_FMT) + "|" + time + "|" + description + "|" + vendor + "|" + userAmount);
+                bw.write(formatted);
                 bw.newLine();
                 System.out.println(GREEN + "Deposit Recorded\n" + RESET);
             } catch (Exception e)  {
