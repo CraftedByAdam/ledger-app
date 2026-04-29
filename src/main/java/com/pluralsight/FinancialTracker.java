@@ -311,10 +311,16 @@ public class FinancialTracker {
 
         transactions.sort(Comparator.comparing(Transaction::getDate).reversed());
 
+        boolean found = false;
+
         for (Transaction transaction : transactions) {
             if (!transaction.getDate().isBefore(start) && !transaction.getDate().isAfter(end)) {
                 printTransactions(transaction);
+                found = true;
             }
+        }
+        if (!found) {
+            System.out.println("UH OH! No transactions found.");
         }
     }
 
@@ -369,7 +375,7 @@ public class FinancialTracker {
     /**
      * Takes the transactions and prints it in a formatted row.
      * Uses printf to align the data into columns so the ledger is easy for the user to read.
-     * @param transaction
+     * @param transaction formats the transactions
      */
     private static void printTransactions(Transaction transaction) {
         System.out.printf("%-12s %-12s %-12s %-12s %10.2f\n", transaction.getDate(), transaction.getTime(), transaction.getDescription(),
