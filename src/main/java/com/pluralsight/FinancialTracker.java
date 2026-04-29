@@ -181,6 +181,8 @@ public class FinancialTracker {
     }
 
     private static void ledgerMenu(Scanner scanner) {
+        transactions.sort(Comparator.comparing(Transaction::getDate).reversed());
+
         final String RESET = "\u001B[0m";
         final String YELLOW = "\u001B[33m";
         final String BLUE = "\u001B[34m";
@@ -217,10 +219,8 @@ public class FinancialTracker {
     private static void displayLedger() {
         printHeader();
 
-        transactions.sort(Comparator.comparing(Transaction::getDate).reversed());
-
         for(Transaction transaction : transactions) {
-            printTransactions(transaction);
+            printTransaction(transaction);
         }
     }
 
@@ -231,11 +231,9 @@ public class FinancialTracker {
     private static void displayDeposits() {
         printHeader();
 
-        transactions.sort(Comparator.comparing(Transaction::getDate).reversed());
-
         for(Transaction transaction : transactions) {
             if (transaction.getAmount() > 0) {
-                printTransactions(transaction);
+                printTransaction(transaction);
             }
         }
     }
@@ -247,11 +245,9 @@ public class FinancialTracker {
     private static void displayPayments() {
         printHeader();
 
-        transactions.sort(Comparator.comparing(Transaction::getDate).reversed());
-
         for(Transaction transaction : transactions) {
             if (transaction.getAmount() < 0) {
-                printTransactions(transaction);
+                printTransaction(transaction);
             }
         }
     }
@@ -309,13 +305,11 @@ public class FinancialTracker {
     private static void filterTransactionsByDate(LocalDate start, LocalDate end) {
         printHeader();
 
-        transactions.sort(Comparator.comparing(Transaction::getDate).reversed());
-
         boolean found = false;
 
         for (Transaction transaction : transactions) {
             if (!transaction.getDate().isBefore(start) && !transaction.getDate().isAfter(end)) {
-                printTransactions(transaction);
+                printTransaction(transaction);
                 found = true;
             }
         }
@@ -331,13 +325,11 @@ public class FinancialTracker {
     private static void filterTransactionsByVendor(String vendor) {
         printHeader();
 
-        transactions.sort(Comparator.comparing(Transaction::getDate).reversed());
-
         boolean found = false;
 
         for (Transaction transaction : transactions) {
             if (transaction.getVendor().equalsIgnoreCase(vendor)) {
-                printTransactions(transaction);
+                printTransaction(transaction);
                 found = true;
             }
         }
@@ -377,7 +369,7 @@ public class FinancialTracker {
      * Uses printf to align the data into columns so the ledger is easy for the user to read.
      * @param transaction formats the transactions
      */
-    private static void printTransactions(Transaction transaction) {
+    private static void printTransaction(Transaction transaction) {
         System.out.printf("%-12s %-12s %-12s %-12s %10.2f\n", transaction.getDate(), transaction.getTime(), transaction.getDescription(),
                 transaction.getVendor(), transaction.getAmount());
     }
