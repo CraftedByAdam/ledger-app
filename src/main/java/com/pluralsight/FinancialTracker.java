@@ -307,7 +307,6 @@ public class FinancialTracker {
      * @param end checks if it's not after the end date provided.
      */
     private static void filterTransactionsByDate(LocalDate start, LocalDate end) {
-        // TODO – iterate transactions, print those within the range
         printHeader();
 
         transactions.sort(Comparator.comparing(Transaction::getDate).reversed());
@@ -324,15 +323,20 @@ public class FinancialTracker {
      * @param vendor checks the name of the vendor provided by the user.
      */
     private static void filterTransactionsByVendor(String vendor) {
-        // TODO – iterate transactions, print those with matching vendor
         printHeader();
 
         transactions.sort(Comparator.comparing(Transaction::getDate).reversed());
 
+        boolean found = false;
+
         for (Transaction transaction : transactions) {
-            if (transaction.getVendor().equals(vendor)) {
+            if (transaction.getVendor().equalsIgnoreCase(vendor)) {
                 printTransactions(transaction);
+                found = true;
             }
+        }
+        if (!found) {
+            System.out.println("OOPS! No Transactions Found For This Vendor.\n\n");
         }
     }
 
