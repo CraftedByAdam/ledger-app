@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Scanner;
 
 public class FinancialTracker {
@@ -128,7 +129,6 @@ public class FinancialTracker {
 
             String formatted = String.format("%s|%s|%s|%s|%.2f", date, time, description, vendor,  userAmount);
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
-                String line;
                 bw.write(formatted);
                 bw.newLine();
                 System.out.println(GREEN + "Deposit Recorded\n" + RESET);
@@ -140,6 +140,10 @@ public class FinancialTracker {
     /**
      * In this method I did the same thing as I did in my addDeposit method, but I made it so the user enters a positive amount,
      * and it will save to the file as a negative number.
+     */
+    /**
+     *
+     * @param scanner
      */
     private static void addPayment(Scanner scanner) {
         // TODO
@@ -206,54 +210,48 @@ public class FinancialTracker {
     }
 
     /**
-     * This method generates all the transaction in a table format. To show the newest item first I made a reverse for loop that
-     * shows the transaction from newest to oldest. I used my getters to access the data that is inside each object and I
-     * also used prinf to format the data into aligned columns.
+     * Displays all transactions in a formatted table.
+     * Uses a for each loop to present data from newest to oldest.
+     * Uses getters and printf formatting to ensure column alignment.
     * */
     private static void displayLedger() {
-        /* TODO – print all transactions in column format */
-        System.out.println("DATE\t\tTIME\t\tDESCRIPTION\t\tVENDOR\t\t\tAMOUNT");
-        System.out.println("----------------------------------------------------------------------");
+        printHeader();
 
-        for(int i = transactions.size() - 1; i >= 0; i--) {
-            Transaction transaction = transactions.get(i);
-            System.out.printf("%-12s %-12s %-12s %-12s %10.2f\n", transaction.getDate(), transaction.getTime(), transaction.getDescription(),
-                    transaction.getVendor(), transaction.getAmount());
+        transactions.sort(Comparator.comparing(Transaction::getDate).reversed());
+
+        for(Transaction transaction : transactions) {
+            printTransactions(transaction);
         }
     }
 
     /**
-     * In this method I took the code I wrote in my displayLedger method and I added an if statement inside my for loop
-     * that checks if the amount is positive and moved my printf inside the condition.
+     * Filters and displays only positive transaction amounts.
+     * Uses a for each loop to print entries where the amount is greater than zero.
      **/
     private static void displayDeposits() {
-        /* TODO – only amount > 0 */
-        System.out.println("DATE\t\tTIME\t\tDESCRIPTION\t\tVENDOR\t\t\tAMOUNT");
-        System.out.println("----------------------------------------------------------------------");
+        printHeader();
 
-        for(int i = transactions.size() - 1; i >= 0; i--) {
-            Transaction transaction = transactions.get(i);
+        transactions.sort(Comparator.comparing(Transaction::getDate).reversed());
+
+        for(Transaction transaction : transactions) {
             if (transaction.getAmount() > 0) {
-                System.out.printf("%-12s %-12s %-12s %-12s %10.2f\n", transaction.getDate(), transaction.getTime(), transaction.getDescription(),
-                        transaction.getVendor(), transaction.getAmount());
+                printTransactions(transaction);
             }
         }
     }
 
     /**
-     * In this method I Just took the code in my displayDeposits methods and changed the > to < in the if statement so
-     * it will only display the amounts that are negative, bellow 0.
+     * Filters and displays only negative transaction amounts.
+     * Uses a for each loop to print entries where the amount is greater than zero.
      **/
     private static void displayPayments() {
-        /* TODO – only amount < 0 */
-        System.out.println("DATE\t\tTIME\t\tDESCRIPTION\t\tVENDOR\t\t\tAMOUNT");
-        System.out.println("----------------------------------------------------------------------");
+        printHeader();
 
-        for(int i = transactions.size() - 1; i >= 0; i--) {
-            Transaction transaction = transactions.get(i);
+        transactions.sort(Comparator.comparing(Transaction::getDate).reversed());
+
+        for(Transaction transaction : transactions) {
             if (transaction.getAmount() < 0) {
-                System.out.printf("%-12s %-12s %-12s %-12s %10.2f\n", transaction.getDate(), transaction.getTime(), transaction.getDescription(),
-                        transaction.getVendor(), transaction.getAmount());
+                printTransactions(transaction);
             }
         }
     }
@@ -321,5 +319,23 @@ public class FinancialTracker {
     private static Double parseDouble(String s) {
         /* TODO – return Double   or null */
         return null;
+    }
+
+    /**
+     * Prints the table title for the displayLedger, displayDeposits, and displayPayments methods.
+     */
+    private static void printHeader() {
+        System.out.println("DATE\t\tTIME\t\tDESCRIPTION\t\tVENDOR\t\t\tAMOUNT");
+        System.out.println("----------------------------------------------------------------------");
+    }
+
+    /**
+     * Takes the transactions and prints it in a formatted row.
+     * Uses printf to align the data into columns so the ledger is easy for the user to read.
+     * @param transaction
+     */
+    private static void printTransactions(Transaction transaction) {
+        System.out.printf("%-12s %-12s %-12s %-12s %10.2f\n", transaction.getDate(), transaction.getTime(), transaction.getDescription(),
+                transaction.getVendor(), transaction.getAmount());
     }
 }
