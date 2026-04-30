@@ -277,28 +277,28 @@ public class FinancialTracker {
 
             switch (input) {
                 case "1" -> {
-                    /* TODO – month-to-date report */
                     LocalDate today = LocalDate.now();
                     LocalDate start = today.withDayOfMonth(1);
                     filterTransactionsByDate(start, today);
                 }
                 case "2" -> {
-                    /* TODO – previous month report */
                     LocalDate today = LocalDate.now();
-                    LocalDate start = today.minusMonths(1);
-                    filterTransactionsByDate(start, today);
+                    LocalDate start = today.withDayOfMonth(1);
+                    LocalDate endOfLastMonth = start.minusDays(1);
+                    LocalDate prevMonth = endOfLastMonth.minusMonths(1);
+                    filterTransactionsByDate(prevMonth, endOfLastMonth);
                 }
                 case "3" -> {
-                    /* TODO – year-to-date report   */
                     LocalDate today = LocalDate.now();
-                    LocalDate start = today.withDayOfYear(1);
-                    filterTransactionsByDate(start, today);
+                    LocalDate year = today.withDayOfYear(1);
+                    filterTransactionsByDate(year, today);
                 }
                 case "4" -> {
-                    /* TODO – previous year report  */
                     LocalDate today = LocalDate.now();
-                    LocalDate start = today.minusYears(1);
-                    filterTransactionsByDate(start, today);
+                    LocalDate start = today.withDayOfYear(1);
+                    LocalDate endOfLastMonth = start.minusDays(1);
+                    LocalDate prevYear = endOfLastMonth.minusYears(1);
+                    filterTransactionsByDate(prevYear, endOfLastMonth);
                 }
                 case "5" -> {
                     System.out.print("Vendor Name: ");
@@ -362,10 +362,6 @@ public class FinancialTracker {
         // TODO – prompt for any combination of date range, description,
         //        vendor, and exact amount, then display matches
     }
-
-    /* ------------------------------------------------------------------
-       Utility parsers (you can reuse in many places)
-       ------------------------------------------------------------------ */
 
     private static LocalDate parseDate(String s) {
         /* TODO – return LocalDate or null */
