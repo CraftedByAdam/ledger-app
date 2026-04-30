@@ -101,33 +101,52 @@ public class FinancialTracker {
      */
     private static void addDeposit(Scanner scanner) {
 
-        System.out.print(GREEN + "Date & Time (yyyy-MM-dd HH:mm:ss): ");
-        String dateTime = scanner.nextLine();
-        System.out.print("Description: ");
-        String description = scanner.nextLine();
-        System.out.print("Vendor: ");
-        String vendor = scanner.nextLine();
-        System.out.print("Amount (positive): " + RESET);
-        double userAmount = Double.parseDouble(scanner.nextLine());
+        //declared variables so they can be accessed outside the loop.
+        String dateTime = "";
+        String description = "";
+        String vendor = "";
+        double userAmount = 0.0;
+        LocalDate date = null;
+        LocalTime time = null;
 
-        if (userAmount <= 0) {
-            System.out.println(RED + "Invalid Amount" + RESET);
-            return; //find a way to get it to keep asking
-        }
-
+        //placed formatter at the top to be reused,
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDate date = LocalDate.parse(dateTime, formatter);
-        LocalTime time = LocalTime.parse(dateTime, formatter);
 
-        //Better way!
-        /*String[] dateTimeParts = dateTime.split(" ");
-        LocalDate date = LocalDate.parse(dateTimeParts[0]);
-        LocalTime time = LocalTime.parse(dateTimeParts[1]);*/
+        boolean running = false;
+
+        //makes program keeps asking until user enters valid data.
+        while (!running) {
+
+            //won't crash if entered something incorrect
+            try {
+            System.out.print(GREEN + "Date & Time (yyyy-MM-dd HH:mm:ss): ");
+            dateTime = scanner.nextLine();
+            System.out.print("Description: ");
+            description = scanner.nextLine();
+            System.out.print("Vendor: ");
+            vendor = scanner.nextLine();
+            System.out.print("Amount (positive): " + RESET);
+            userAmount = Double.parseDouble(scanner.nextLine());
+
+            date = LocalDate.parse(dateTime, formatter);
+            time = LocalTime.parse(dateTime, formatter);
+
+            //allows positive numbers, if valid, will exit the loop.
+            if (userAmount > 0) {
+                running = true;
+            }else  {
+                System.out.println("Please enter a positive number");
+            }
+            } catch (Exception e){
+                System.out.println(RED + "Invalid input "  + e.getMessage() + RESET);
+            }
+        }
 
         Transaction transaction = new Transaction(date, time, description, vendor, userAmount);
         transactions.add(transaction);
-
-        String formatted = String.format("%s|%s|%s|%s|%.2f", date, time, description, vendor,  userAmount);
+                                                                //formats date and time correctly
+        String formatted = String.format("%s|%s|%s|%s|%.2f", date.format(DATE_FMT), time.format(TIME_FMT), description, vendor,  userAmount);
+        //try with resource, will close automatically.
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
             bw.write(formatted);
             bw.newLine();
@@ -143,30 +162,53 @@ public class FinancialTracker {
      */
     private static void addPayment(Scanner scanner) {
 
-        System.out.print(GREEN + "Date & Time (yyyy-MM-dd HH:mm:ss): ");
-        String dateTime = scanner.nextLine();
-        System.out.print("Description: ");
-        String description = scanner.nextLine();
-        System.out.print("Vendor: ");
-        String vendor = scanner.nextLine();
-        System.out.print("Amount (positive): " + RESET);
-        double userAmount = Double.parseDouble(scanner.nextLine());
+        //declared variables so they can be accessed outside the loop.
+        String dateTime = "";
+        String description = "";
+        String vendor = "";
+        double userAmount = 0.0;
+        LocalDate date = null;
+        LocalTime time = null;
 
-        if (userAmount <= 0) {
-            System.out.println(RED + "Invalid Amount" + RESET);
-            return; //find a way to get it to keep asking
+        //placed formatter at the top to be reused,
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        boolean running = false;
+
+        //makes program keeps asking until user enters valid data.
+        while (!running) {
+
+            //won't crash if entered something incorrect
+            try {
+                System.out.print(GREEN + "Date & Time (yyyy-MM-dd HH:mm:ss): ");
+                dateTime = scanner.nextLine();
+                System.out.print("Description: ");
+                description = scanner.nextLine();
+                System.out.print("Vendor: ");
+                vendor = scanner.nextLine();
+                System.out.print("Amount (positive): " + RESET);
+                userAmount = Double.parseDouble(scanner.nextLine());
+
+                date = LocalDate.parse(dateTime, formatter);
+                time = LocalTime.parse(dateTime, formatter);
+
+                //allows positive numbers, if valid, will exit the loop.
+                if (userAmount > 0) {
+                    running = true;
+                }else  {
+                    System.out.println("Please enter a positive number");
+                }
+            } catch (Exception e){
+                System.out.println(RED + "Invalid input "  + e.getMessage() + RESET);
+            }
         }
-        String[] dateTimeParts = dateTime.split(" ");
-        LocalDate date = LocalDate.parse(dateTimeParts[0], DATE_FMT);
-        LocalTime time = LocalTime.parse(dateTimeParts[1], TIME_FMT);
         double amount = -userAmount;
 
         Transaction transaction = new Transaction(date, time, description, vendor, userAmount);
         transactions.add(transaction);
-
-        String formatted = String.format("%s|%s|%s|%s|%.2f", date, time, description, vendor,  amount);
+                                                                 //formats date and time correctly
+        String formatted = String.format("%s|%s|%s|%s|%.2f", date.format(DATE_FMT), time.format(TIME_FMT), description, vendor,  amount);
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
-            String line;
             bw.write(formatted);
             bw.newLine();
             System.out.println(GREEN + "Deposit Recorded\n" + RESET);
