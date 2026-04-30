@@ -28,6 +28,8 @@ public class FinancialTracker {
     private static final String YELLOW = "\u001B[33m";
     private static final String BLUE = "\u001B[34m";
     private static final String PURPLE = "\u001B[35m";
+    private static final String GREEN = "\u001B[32m";
+    private static final String RED = "\u001B[31m";
 
     public static void main(String[] args) {
 
@@ -90,7 +92,7 @@ public class FinancialTracker {
                 transactions.add(transaction);
             }
         } catch (Exception e) {
-            System.out.println("Error reading file");
+            System.err.println("Error reading file");
         }
     }
 
@@ -101,12 +103,8 @@ public class FinancialTracker {
      * current data.
      */
     private static void addDeposit(Scanner scanner) {
-        // TODO
-        final String RESET = "\u001B[0m";
-        final String BLUE = "\u001B[34m";
-        final String GREEN = "\u001B[32m";
 
-            System.out.print(BLUE + "Date & Time (yyyy-MM-dd HH:mm:ss): ");
+            System.out.print(GREEN + "Date & Time (yyyy-MM-dd HH:mm:ss): ");
             String dateTime = scanner.nextLine();
             System.out.print("Description: ");
             String description = scanner.nextLine();
@@ -116,7 +114,7 @@ public class FinancialTracker {
             double userAmount = Double.parseDouble(scanner.nextLine());
 
             if (userAmount <= 0) {
-                System.err.println("Invalid Amount");
+                System.out.println(RED + "Invalid Amount" + RESET);
                              //find a way to get it to keep asking
             }
             //Better way!
@@ -146,12 +144,8 @@ public class FinancialTracker {
      * @param scanner
      */
     private static void addPayment(Scanner scanner) {
-        // TODO
-        final String RESET = "\u001B[0m";
-        final String BLUE = "\u001B[34m";
-        final String GREEN = "\u001B[32m";
 
-        System.out.print(BLUE + "Date & Time (yyyy-MM-dd HH:mm:ss): ");
+        System.out.print(GREEN + "Date & Time (yyyy-MM-dd HH:mm:ss): ");
         String dateTime = scanner.nextLine();
         System.out.print("Description: ");
         String description = scanner.nextLine();
@@ -161,7 +155,7 @@ public class FinancialTracker {
         double userAmount = Double.parseDouble(scanner.nextLine());
 
         if (userAmount <= 0) {
-            System.err.println("Invalid Amount");
+            System.out.println(RED + "Invalid Amount" + RESET);
             return; //find a way to get it to keep asking
         }
         String[] dateTimeParts = dateTime.split(" ");
@@ -182,11 +176,6 @@ public class FinancialTracker {
 
     private static void ledgerMenu(Scanner scanner) {
         transactions.sort(Comparator.comparing(Transaction::getDate).reversed());
-
-        final String RESET = "\u001B[0m";
-        final String YELLOW = "\u001B[33m";
-        final String BLUE = "\u001B[34m";
-        final String PURPLE = "\u001B[35m";
 
         boolean running = true;
         while (running) {
@@ -252,14 +241,7 @@ public class FinancialTracker {
         }
     }
 
-    /* ------------------------------------------------------------------
-       Reports menu
-       ------------------------------------------------------------------ */
     private static void reportsMenu(Scanner scanner) {
-        final String RESET = "\u001B[0m";
-        final String YELLOW = "\u001B[33m";
-        final String BLUE = "\u001B[34m";
-        final String PURPLE = "\u001B[35m";
 
         boolean running = true;
         while (running) {
@@ -311,10 +293,6 @@ public class FinancialTracker {
             }
         }
     }
-
-    /* ------------------------------------------------------------------
-       Reporting helpers
-       ------------------------------------------------------------------ */
 
     /**
      * Loops through the list of transactions to print only those that occurred within a specific date range.
