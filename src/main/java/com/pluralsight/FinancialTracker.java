@@ -60,9 +60,8 @@ public class FinancialTracker {
     }
 
     /**
-     * This method runs as soon as the program starts. It syncs the CSV file with the ArrayList. It will check if the
-     * exists first so the program doesn't crash. Then it reads the file, splits the text at each pipe symbol and turns
-     * the data into a transaction object.
+     * Reads file when application starts. Check if the file exists.
+     * @param fileName is CSV file used to load the transactions data
      */
     public static void loadTransactions(String fileName) {
         File file = new File(fileName);
@@ -77,7 +76,7 @@ public class FinancialTracker {
             System.err.println("Error finding file" + e.getMessage());
         }
         /* This is a "try with resource". Safest way to close a BufferReader, It will close the file for me automatically
-        * instead of my closing it manually with ".close". */
+           instead of my closing it manually with ".close". */
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -97,51 +96,50 @@ public class FinancialTracker {
     }
 
     /**
-     * This method prompts the user for the Date & Time, Description, Vendor, and amount. I made sure the amount entered
-     * is a positive amount. It splits the Date & Time input to match the file format, I also used a FIleWriter and set
-     * it to true so that it saves the new transactions to the bottom of the file without erasing or overwriting the
-     * current data.
+     * Asks user for input and stores the data into the transaction file.
+     * @param scanner used to capture the user input for the deposit
      */
     private static void addDeposit(Scanner scanner) {
 
-            System.out.print(GREEN + "Date & Time (yyyy-MM-dd HH:mm:ss): ");
-            String dateTime = scanner.nextLine();
-            System.out.print("Description: ");
-            String description = scanner.nextLine();
-            System.out.print("Vendor: ");
-            String vendor = scanner.nextLine();
-            System.out.print("Amount (positive): " + RESET);
-            double userAmount = Double.parseDouble(scanner.nextLine());
+        System.out.print(GREEN + "Date & Time (yyyy-MM-dd HH:mm:ss): ");
+        String dateTime = scanner.nextLine();
+        System.out.print("Description: ");
+        String description = scanner.nextLine();
+        System.out.print("Vendor: ");
+        String vendor = scanner.nextLine();
+        System.out.print("Amount (positive): " + RESET);
+        double userAmount = Double.parseDouble(scanner.nextLine());
 
-            if (userAmount <= 0) {
-                System.out.println(RED + "Invalid Amount" + RESET);
-                             //find a way to get it to keep asking
-            }
-            //Better way!
-            String[] dateTimeParts = dateTime.split(" ");
-            LocalDate date = LocalDate.parse(dateTimeParts[0], DATE_FMT);
-            LocalTime time = LocalTime.parse(dateTimeParts[1], TIME_FMT);
+        if (userAmount <= 0) {
+            System.out.println(RED + "Invalid Amount" + RESET);
+            return; //find a way to get it to keep asking
+        }
 
-            Transaction transaction = new Transaction(date, time, description, vendor, userAmount);
-            transactions.add(transaction);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDate date = LocalDate.parse(dateTime, formatter);
+        LocalTime time = LocalTime.parse(dateTime, formatter);
 
-            String formatted = String.format("%s|%s|%s|%s|%.2f", date, time, description, vendor,  userAmount);
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
-                bw.write(formatted);
-                bw.newLine();
-                System.out.println(GREEN + "Deposit Recorded\n" + RESET);
-            } catch (Exception e)  {
-                System.err.println("Error adding information" + e.getMessage());
-            }
+        //Better way!
+        /*String[] dateTimeParts = dateTime.split(" ");
+        LocalDate date = LocalDate.parse(dateTimeParts[0]);
+        LocalTime time = LocalTime.parse(dateTimeParts[1]);*/
+
+        Transaction transaction = new Transaction(date, time, description, vendor, userAmount);
+        transactions.add(transaction);
+
+        String formatted = String.format("%s|%s|%s|%s|%.2f", date, time, description, vendor,  userAmount);
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
+            bw.write(formatted);
+            bw.newLine();
+            System.out.println(GREEN + "Deposit Recorded\n" + RESET);
+        } catch (Exception e)  {
+            System.err.println("Error adding information" + e.getMessage());
+        }
     }
 
     /**
-     * In this method I did the same thing as I did in my addDeposit method, but I made it so the user enters a positive amount,
-     * and it will save to the file as a negative number.
-     */
-    /**
-     *
-     * @param scanner
+     * Asks user for input and stores the data into the transaction file.
+     * @param scanner used to capture the user input for the payment
      */
     private static void addPayment(Scanner scanner) {
 
@@ -162,6 +160,9 @@ public class FinancialTracker {
         LocalDate date = LocalDate.parse(dateTimeParts[0], DATE_FMT);
         LocalTime time = LocalTime.parse(dateTimeParts[1], TIME_FMT);
         double amount = -userAmount;
+
+        Transaction transaction = new Transaction(date, time, description, vendor, userAmount);
+        transactions.add(transaction);
 
         String formatted = String.format("%s|%s|%s|%s|%.2f", date, time, description, vendor,  amount);
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
@@ -266,9 +267,8 @@ public class FinancialTracker {
                 case "2" -> {
                     LocalDate today = LocalDate.now();
                     LocalDate start = today.withDayOfMonth(1);
-                    LocalDate endOfLastMonth = start.minusDays(1);
-                    LocalDate prevMonth = endOfLastMonth.minusMonths(1);
-                    filterTransactionsByDate(prevMonth, endOfLastMonth);
+                    LocalDate endOfLastMonth = start.minusMonths(1);
+                    filterTransactionsByDate(endOfLastMonth, start);
                 }
                 case "3" -> {
                     LocalDate today = LocalDate.now();
@@ -278,9 +278,8 @@ public class FinancialTracker {
                 case "4" -> {
                     LocalDate today = LocalDate.now();
                     LocalDate start = today.withDayOfYear(1);
-                    LocalDate endOfLastMonth = start.minusDays(1);
-                    LocalDate prevYear = endOfLastMonth.minusYears(1);
-                    filterTransactionsByDate(prevYear, endOfLastMonth);
+                    LocalDate endOfLastYear = start.minusYears(1);
+                    filterTransactionsByDate(endOfLastYear, start);
                 }
                 case "5" -> {
                     System.out.print("Vendor Name: ");
