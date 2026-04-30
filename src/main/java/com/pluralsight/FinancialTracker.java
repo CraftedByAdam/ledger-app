@@ -276,10 +276,30 @@ public class FinancialTracker {
             String input = scanner.nextLine().trim();
 
             switch (input) {
-                case "1" -> {/* TODO – month-to-date report */ }
-                case "2" -> {/* TODO – previous month report */ }
-                case "3" -> {/* TODO – year-to-date report   */ }
-                case "4" -> {/* TODO – previous year report  */ }
+                case "1" -> {
+                    /* TODO – month-to-date report */
+                    LocalDate today = LocalDate.now();
+                    LocalDate start = today.withDayOfMonth(1);
+                    filterTransactionsByDate(start, today);
+                }
+                case "2" -> {
+                    /* TODO – previous month report */
+                    LocalDate today = LocalDate.now();
+                    LocalDate start = today.minusMonths(1);
+                    filterTransactionsByDate(start, today);
+                }
+                case "3" -> {
+                    /* TODO – year-to-date report   */
+                    LocalDate today = LocalDate.now();
+                    LocalDate start = today.withDayOfYear(1);
+                    filterTransactionsByDate(start, today);
+                }
+                case "4" -> {
+                    /* TODO – previous year report  */
+                    LocalDate today = LocalDate.now();
+                    LocalDate start = today.minusYears(1);
+                    filterTransactionsByDate(start, today);
+                }
                 case "5" -> {
                     System.out.print("Vendor Name: ");
                     String vendor = scanner.nextLine();
@@ -346,6 +366,7 @@ public class FinancialTracker {
     /* ------------------------------------------------------------------
        Utility parsers (you can reuse in many places)
        ------------------------------------------------------------------ */
+
     private static LocalDate parseDate(String s) {
         /* TODO – return LocalDate or null */
         return null;
