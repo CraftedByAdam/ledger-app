@@ -1,8 +1,8 @@
-# Project Title
+# Accounting Ledger
 
 ## Description of the Project
-
-Briefly describe what this Java console application does. Mention its purpose and who the intended users are. Explain the main functionality and what problems it aims to solve.
+This is a Command Line interface (CLI) application that's desighned to help users manage their personal finances. Users can record their deposits and payments. 
+The application provides a formatted ledger for vewing transaction history and provides various reporting tool so the user can filter the data by date range or vedor.
 
 ## User Stories
 
@@ -12,12 +12,17 @@ List the user stories that guided the development of your application. Format th
 - As a user, I want to add a deposit so that my income is saved and tracked in the ledger file.
 - As a user, I want to record a payment so that my spending is tracked and subtracted from my total.
 - As a user, I want to see all my transactions in a table so that I can review my full financial history.
+- As a user, I want a Reports menu so that I can choose between different types of financial reports.
+- As a user, I want to filter my transactions by start date, end date, description, vendor, and amount so that I can find specific transactions.
 
 
 
 ## Setup
 
-Instructions on how to set up and run the project using IntelliJ IDEA.
+1. Open IntelliJ IDEA.
+2. Open the ledger app project
+3. Locate the FinancialTracker.java file
+4. Right-click the file and select "Run 'FinancialTracker.main()'"
 
 ### Prerequisites
 
@@ -36,38 +41,33 @@ Follow these steps to get your application running within IntelliJ IDEA:
 
 ## Technologies Used
 
-- Java: Mention the version you are using.
-- Any additional libraries or frameworks used in the project.
+- Version Java 17.
+- Git/GitHub: Used for version control and proect tracking.
+- CSV file: Used for a database to store transaction records.
 
 ## Demo
 
-Include screenshots or GIFs that show your application in action. Use tools like [Giphy Capture](https://giphy.com/apps/giphycapture) to record a GIF of your application.
-
-![Application Screenshot](path/to/your/screenshot.png)
+[LedgerAppDemo.mp4](../../../../../Videos/LedgerAppDemo.mp4)
 
 ## Future Work
 
-Outline potential future enhancements or functionalities you might consider adding:
-
-- Additional feature to be developed.
-- Improvement of current functionalities.
+- I would like to add a summery that shows a total of all spending vs all income for the month.
 
 ## Resources
 
 List resources such as tutorials, articles, or documentation that helped you during the project.
 
-- [Java Programming Tutorial](https://www.example.com)
-- [Effective Java](https://www.example.com)
+- [My Best Friend GOOGLE](https://www.google.com)
+- [Java Visual Learning Hub](https://raymaroun.github.io/yearup-java-visuals/index.html)
+- [W3Schools Java Creat Files](https://www.w3schools.com/java/java_files_create.asp)
+- [Learn Java Object-Oriented Programming with actual code](https://www.youtube.com/watch?v=TiccevwEVe8&t=1601s)
+- [Java Full Course for free ☕](https://www.youtube.com/watch?v=xTtL8E4LzTQ&t=4089s)
+- [Java Full Course NEW](https://www.youtube.com/watch?v=Qgl81fPcLc8&t=2880s)
+- [W3Schools Java String format() Method](https://www.youtube.com/watch?v=Qgl81fPcLc8&t=2880s)
 
-## Team Members
-
-- **Name 1** - Specific contributions or roles.
-- **Name 2** - Specific contributions or roles.
 
 ## Thanks
 
-Express gratitude towards those who provided help, guidance, or resources:
-
-- Thank you to [Mentor's Name] for continuous support and guidance.
+- Thank you to the programming wizard Raymond Maroun for continuous support, guidance, and knowledge he has given me.
 - A special thanks to all teammates for their dedication and teamwork.
  
