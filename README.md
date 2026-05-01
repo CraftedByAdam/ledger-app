@@ -47,7 +47,7 @@ Follow these steps to get your application running within IntelliJ IDEA:
 
 ## Demo
 
-[LedgerAppDemo.mp4](../../../../../Videos/LedgerAppDemo.mp4)
+![Application Demo](Ledger%20Demo.gif)
 
 ## Future Work
 
