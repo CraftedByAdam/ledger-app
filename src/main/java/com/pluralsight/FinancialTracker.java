@@ -207,7 +207,7 @@ public class FinancialTracker {
         }
         double amount = -userAmount;
 
-        Transaction transaction = new Transaction(date, time, description, vendor, userAmount);
+        Transaction transaction = new Transaction(date, time, description, vendor, amount);
         transactions.add(transaction);
         //formats date and time correctly
         String formatted = String.format("%s|%s|%s|%s|%.2f", date.format(DATE_FMT), time.format(TIME_FMT), description, vendor, amount);
